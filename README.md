@@ -23,7 +23,7 @@ ABCBA
 (they can span multiple lines as well)
 
 ## taskResults.txt
-Text file where the total running time for each task is saved.
+Text file where the total running time for each task is saved after execution is done.
 
 Example:
 
