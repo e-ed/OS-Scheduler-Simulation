@@ -20,6 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,13 +32,14 @@ public class Window extends javax.swing.JFrame {
     static final int QUANTUM_LENGTH = 2;
     static int QUANTUM_CURRENT = 0;
     static final CPU cpu = new CPU();
-    FileInputStream in;
-    InputStreamReader inputStreamReader;
+    static FileInputStream in;
+    static InputStreamReader inputStreamReader;
     static BufferedReader reader;
     static private Queue<Task> tasks;
     static int c;
     static int seconds = 0;
-    private static File file = new File("task.txt");
+    static JFileChooser j = new JFileChooser();
+    static File file;
     static FileWriter fileWriter;
     static StringBuilder taskResults = new StringBuilder();
 
@@ -45,13 +47,10 @@ public class Window extends javax.swing.JFrame {
      * Creates new form Window
      */
     public Window() throws FileNotFoundException, IOException {
-
-        tasks = new LinkedList<>();
-        this.in = new FileInputStream(file);
-        inputStreamReader = new InputStreamReader(in);
-        reader = new BufferedReader(inputStreamReader);
+        
         fileWriter = new FileWriter("taskResults.txt");
         taskResults.append("Quantum Length: 2s \n\n");
+        tasks = new LinkedList<>();
         initComponents();
 
     }
@@ -163,7 +162,7 @@ public class Window extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws FileNotFoundException {
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -199,6 +198,12 @@ public class Window extends javax.swing.JFrame {
 
             }
         });
+        
+        j.showOpenDialog(null);
+        file = j.getSelectedFile();
+        in = new FileInputStream(file);
+        inputStreamReader = new InputStreamReader(in);
+        reader = new BufferedReader(inputStreamReader);
 
         int interval = 1000;
 
