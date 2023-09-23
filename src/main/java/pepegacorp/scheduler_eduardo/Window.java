@@ -5,9 +5,11 @@
 package pepegacorp.scheduler_eduardo;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -17,6 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,21 +39,24 @@ public class Window extends javax.swing.JFrame {
     static int c;
     static int seconds = 0;
     private static File file = new File("task.txt");
-    Scanner scanner;
+    static FileWriter fileWriter;
+    static StringBuilder taskResults = new StringBuilder();
+
+    static boolean done = false;
+    static int fileLength = 0;
+    static int sbLength = 0;
 
     /**
      * Creates new form Window
      */
-    public Window() throws FileNotFoundException {
+    public Window() throws FileNotFoundException, IOException {
+
         tasks = new LinkedList<>();
         this.in = new FileInputStream(file);
         inputStreamReader = new InputStreamReader(in);
         reader = new BufferedReader(inputStreamReader);
-        try {
-            scanner = new Scanner(file);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        fileWriter = new FileWriter("taskResults.txt");
+
         initComponents();
 
     }
@@ -194,6 +200,8 @@ public class Window extends javax.swing.JFrame {
                     new Window().setVisible(true);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -212,15 +220,32 @@ public class Window extends javax.swing.JFrame {
                 if (seconds == 0 || seconds % 5 == 0) {
                     try {
                         readTask();
+
                     } catch (IOException ex) {
                         Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                try {
+                    updateCPU();
+                } catch (IOException ex) {
+                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-                updateCPU();
                 updateReadyTasks();
+                tasks.forEach(task -> task.setTotalDuration(task.getTotalDuration() + 1));
 
                 seconds++;
+
+                if (c == -1 && tasks.size() == 0 && cpu.getActiveTask() == null) {
+                    try {
+                        fileWriter.write(taskResults.toString());
+                        fileWriter.close();
+                        JOptionPane.showMessageDialog(null, "Done");
+                        System.exit(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
 
             }
          ;
@@ -230,6 +255,7 @@ public class Window extends javax.swing.JFrame {
 
     private static void readTask() throws FileNotFoundException, IOException {
         if ((c = reader.read()) != -1) {
+            fileLength++;
             char character = (char) c;
             if (!Character.isAlphabetic(character)) {
                 c = reader.read();
@@ -267,33 +293,37 @@ public class Window extends javax.swing.JFrame {
         jLabel3.setText(sb.toString());
     }
 
-    private static void updateCPU() {
+    private static void updateCPU() throws IOException {
+
         if (cpu.getActiveTask() == null && !tasks.isEmpty()) {
             cpu.setActiveTask(tasks.remove());
         } else if (cpu.getActiveTask() != null) {
 
             if (cpu.getActiveTask().getDuration() == 0) {
+
+                taskResults.append(cpu.getActiveTask().getName() + " - Total Time: " + cpu.getActiveTask().getTotalDuration() + "\n");
+                sbLength++;
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
-                
+
             } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
+                cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
+
                 tasks.add(cpu.getActiveTask());
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
-                
-                
+
             }
 
-            QUANTUM_CURRENT = cpu.executeInstructions() ? QUANTUM_CURRENT+=1 : QUANTUM_CURRENT;
-            
-//            else {
-//                tasks.add(cpu.getActiveTask());
-//                cpu.setActiveTask(tasks.remove());
-//            }
+            if (cpu.executeInstructions()) {
+                cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
+                QUANTUM_CURRENT += 1;
+            }
+
         }
-        
+
         updateLabels();
-       
+
     }
 
     public static void updateLabels() {

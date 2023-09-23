@@ -11,6 +11,15 @@ package pepegacorp.scheduler_eduardo;
 public abstract class Task {
     private TaskNames name;
     private int duration;
+    private int totalDuration = 0;
+    
+    public int getTotalDuration() {
+        return totalDuration;
+    }
+    
+    public void setTotalDuration(int totalDuration) {
+        this.totalDuration = totalDuration;
+    }
 
     public TaskNames getName() {
         return name;
