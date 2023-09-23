@@ -37,9 +37,6 @@ public class Window extends javax.swing.JFrame {
     private static File file = new File("task.txt");
     static FileWriter fileWriter;
     static StringBuilder taskResults = new StringBuilder();
-    static boolean done = false;
-    static int fileLength = 0;
-    static int sbLength = 0;
 
     /**
      * Creates new form Window
@@ -51,6 +48,7 @@ public class Window extends javax.swing.JFrame {
         inputStreamReader = new InputStreamReader(in);
         reader = new BufferedReader(inputStreamReader);
         fileWriter = new FileWriter("taskResults.txt");
+        taskResults.append("Quantum Length: 2s \n");
         initComponents();
 
     }
@@ -241,12 +239,11 @@ public class Window extends javax.swing.JFrame {
             }
          ;
         
-        }, 2000, interval); 
+        }, 2000, interval);
     }
 
     private static void readTask() throws FileNotFoundException, IOException {
         if ((c = reader.read()) != -1) {
-            fileLength++;
             char character = (char) c;
             while (!Character.isAlphabetic(character)) {
                 c = reader.read();
@@ -291,15 +288,12 @@ public class Window extends javax.swing.JFrame {
         } else if (cpu.getActiveTask() != null) {
 
             if (cpu.getActiveTask().getDuration() == 0) {
-
                 taskResults.append(cpu.getActiveTask().getName() + " - Total Time: " + cpu.getActiveTask().getTotalDuration() + "\n");
-                sbLength++;
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
 
             } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
                 cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
-
                 tasks.add(cpu.getActiveTask());
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;

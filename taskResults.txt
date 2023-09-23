@@ -1,3 +1,4 @@
+Quantum Length: 2s 
 D - Total Time: 6
 A - Total Time: 4
 B - Total Time: 3
