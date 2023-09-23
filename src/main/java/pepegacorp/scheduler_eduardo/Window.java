@@ -31,7 +31,10 @@ import javax.swing.SwingUtilities;
  * @author eduardo
  */
 public class Window extends javax.swing.JFrame {
-    
+
+    static final int QUANTUM_LENGTH = 2;
+    static int QUANTUM_CURRENT = 0;
+
     static final CPU cpu = new CPU();
     FileInputStream in;
     InputStreamReader inputStreamReader;
@@ -75,6 +78,8 @@ public class Window extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("jFrame");
@@ -84,6 +89,10 @@ public class Window extends javax.swing.JFrame {
         jLabel2.setText("Ready tasks:");
 
         jLabel4.setText("Active task:");
+
+        jLabel6.setText("Quantum: ");
+
+        jLabel7.setText("jLabel7");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -101,9 +110,15 @@ public class Window extends javax.swing.JFrame {
                         .addComponent(jLabel3))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addComponent(jLabel4)
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel5)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(29, 29, 29)
+                                .addComponent(jLabel5)))))
                 .addContainerGap(164, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -119,7 +134,11 @@ public class Window extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
 
         pack();
@@ -187,8 +206,8 @@ public class Window extends javax.swing.JFrame {
                             }
                         }
 
-                        updateReadyTasks();
                         updateCPU();
+                        updateReadyTasks();
 
                         seconds++;
 
@@ -234,25 +253,38 @@ public class Window extends javax.swing.JFrame {
     private static void updateReadyTasks() {
         StringBuilder sb = new StringBuilder();
         tasks.forEach(task -> {
-                sb.append("(" + task.getName() + " - " + task.getDuration() + ") ");
-                        }
+            sb.append("(" + task.getName() + " - " + task.getDuration() + ") ");
+        }
         );
         jLabel3.setText(sb.toString());
     }
-    
-    
+
     private static void updateCPU() {
-        if (cpu.getActiveTask() == null && !tasks.isEmpty()) cpu.setActiveTask(tasks.remove());
-        else if (cpu.getActiveTask() != null) {
+        if (cpu.getActiveTask() == null && !tasks.isEmpty()) {
+            cpu.setActiveTask(tasks.remove());
+        } else if (cpu.getActiveTask() != null) {
+
             cpu.executeInstructions();
-            if (cpu.getActiveTask().getDuration() == 0) cpu.setActiveTask(null);
-            else {
+            QUANTUM_CURRENT++;
+
+            if (cpu.getActiveTask().getDuration() == 0) {
+                cpu.setActiveTask(null);
+                QUANTUM_CURRENT = 0;
+            } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
+                tasks.add(cpu.getActiveTask());
+                cpu.setActiveTask(null);
+                QUANTUM_CURRENT = 0;
+            } else {
                 tasks.add(cpu.getActiveTask());
                 cpu.setActiveTask(tasks.remove());
             }
         }
-        if (cpu.getActiveTask() != null) jLabel5.setText("(" + cpu.getActiveTask().getName() + " - " + cpu.getActiveTask().getDuration() + ") ");
-        else jLabel5.setText(null);
+        if (cpu.getActiveTask() != null) {
+            jLabel5.setText("(" + cpu.getActiveTask().getName() + " - " + cpu.getActiveTask().getDuration() + ") ");
+        } else {
+            jLabel5.setText(null);
+        }
+        jLabel7.setText("" + QUANTUM_CURRENT);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -261,5 +293,7 @@ public class Window extends javax.swing.JFrame {
     private static javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private static javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private static javax.swing.JLabel jLabel7;
     // End of variables declaration//GEN-END:variables
 }
