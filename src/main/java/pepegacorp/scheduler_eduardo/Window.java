@@ -183,6 +183,13 @@ public class Window extends javax.swing.JFrame {
     private static void readTask() throws FileNotFoundException, IOException {
         if ((c = reader.read()) != -1) {
             char character = (char) c;
+            if (!Character.isAlphabetic(character)) {
+                System.out.println("entrou");
+                c = reader.read();
+                if (c == -1) return;
+                character = (char) c;
+            }
+            System.out.println(c);
             System.out.println(character);
             
             switch (character) {
@@ -198,6 +205,7 @@ public class Window extends javax.swing.JFrame {
                 case 'D':
                     tasks.add(new D());
                     break;
+                
             }
             
             

@@ -1,1 +1,5 @@
-AAAAABBBDDD
+A
+B
+C
+D
+D
