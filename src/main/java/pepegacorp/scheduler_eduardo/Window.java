@@ -257,7 +257,7 @@ public class Window extends javax.swing.JFrame {
         if ((c = reader.read()) != -1) {
             fileLength++;
             char character = (char) c;
-            if (!Character.isAlphabetic(character)) {
+            while (!Character.isAlphabetic(character)) {
                 c = reader.read();
                 if (c == -1) {
                     return;

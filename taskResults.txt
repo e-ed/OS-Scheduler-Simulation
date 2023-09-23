@@ -1,3 +1,6 @@
 D - Total Time: 6
-D - Total Time: 13
-D - Total Time: 12
+A - Total Time: 4
+B - Total Time: 3
+C - Total Time: 5
+B - Total Time: 4
+A - Total Time: 2
