@@ -47,7 +47,7 @@ public class Window extends javax.swing.JFrame {
      * Creates new form Window
      */
     public Window() throws FileNotFoundException, IOException {
-        
+        JOptionPane.showMessageDialog(null, "Choose the text file with the tasks to be executed");
         fileWriter = new FileWriter("taskResults.txt");
         taskResults.append("Quantum Length: 2s \n\n");
         tasks = new LinkedList<>();
@@ -198,6 +198,7 @@ public class Window extends javax.swing.JFrame {
 
             }
         });
+            
         
         j.showOpenDialog(null);
         file = j.getSelectedFile();
@@ -235,7 +236,7 @@ public class Window extends javax.swing.JFrame {
                     try {
                         fileWriter.write(taskResults.toString());
                         fileWriter.close();
-                        JOptionPane.showMessageDialog(null, "Done");
+                        JOptionPane.showMessageDialog(null, "Execution saved to taskResults.txt");
                         System.exit(0);
                     } catch (IOException ex) {
                         Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
