@@ -24,7 +24,7 @@ public class CPU {
     }
     
     public void executeInstructions() {
-        if (activeTask != null ) this.activeTask.setDuration(activeTask.getDuration() - 1);
+        this.activeTask.setDuration(activeTask.getDuration() - 1);
     }
             
     

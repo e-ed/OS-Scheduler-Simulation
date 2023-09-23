@@ -75,7 +75,7 @@ public class Window extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("jFrame");
+        setTitle("OS Scheduler Simulator - Eduardo");
 
         jLabel1.setFont(new java.awt.Font("Liberation Sans", 0, 18)); // NOI18N
         jLabel1.setText("jLabel1");
@@ -242,15 +242,11 @@ public class Window extends javax.swing.JFrame {
         if ((c = reader.read()) != -1) {
             char character = (char) c;
             if (!Character.isAlphabetic(character)) {
-                System.out.println("entrou");
                 c = reader.read();
-                if (c == -1) {
-                    return;
-                }
+                if (c == -1) return;
                 character = (char) c;
             }
-            System.out.println(c);
-            System.out.println(character);
+
 
             switch (character) {
                 case 'A':
