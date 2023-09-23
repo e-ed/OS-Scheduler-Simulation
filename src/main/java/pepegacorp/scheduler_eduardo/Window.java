@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,11 +31,12 @@ import javax.swing.SwingUtilities;
  * @author eduardo
  */
 public class Window extends javax.swing.JFrame {
-
+    
+    static final CPU cpu = new CPU();
     FileInputStream in;
     InputStreamReader inputStreamReader;
     static BufferedReader reader;
-    static private List<Task> tasks;
+    static private Queue<Task> tasks;
 
     static int c;
 
@@ -45,7 +48,7 @@ public class Window extends javax.swing.JFrame {
      * Creates new form Window
      */
     public Window() throws FileNotFoundException {
-        tasks = new ArrayList<>();
+        tasks = new LinkedList<>();
         this.in = new FileInputStream(file);
         inputStreamReader = new InputStreamReader(in);
         reader = new BufferedReader(inputStreamReader);
@@ -70,6 +73,8 @@ public class Window extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("jFrame");
@@ -77,6 +82,8 @@ public class Window extends javax.swing.JFrame {
         jLabel1.setText("jLabel1");
 
         jLabel2.setText("Ready tasks:");
+
+        jLabel4.setText("Active task:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -91,7 +98,12 @@ public class Window extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel3)))
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jLabel4)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel5)))
                 .addContainerGap(164, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -103,7 +115,11 @@ public class Window extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
         pack();
@@ -166,11 +182,13 @@ public class Window extends javax.swing.JFrame {
                         if (seconds == 0 || seconds % 5 == 0) {
                             try {
                                 readTask();
-                                updateReadyTasks();
                             } catch (IOException ex) {
                                 Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
+
+                        updateReadyTasks();
+                        updateCPU();
 
                         seconds++;
 
@@ -186,12 +204,14 @@ public class Window extends javax.swing.JFrame {
             if (!Character.isAlphabetic(character)) {
                 System.out.println("entrou");
                 c = reader.read();
-                if (c == -1) return;
+                if (c == -1) {
+                    return;
+                }
                 character = (char) c;
             }
             System.out.println(c);
             System.out.println(character);
-            
+
             switch (character) {
                 case 'A':
                     tasks.add(new A());
@@ -205,22 +225,41 @@ public class Window extends javax.swing.JFrame {
                 case 'D':
                     tasks.add(new D());
                     break;
-                
+
             }
-            
-            
+
         }
     }
-    
+
     private static void updateReadyTasks() {
         StringBuilder sb = new StringBuilder();
-        tasks.forEach(task -> sb.append("("+task.getName()+" - " + task.getDuration() + ") "));
+        tasks.forEach(task -> {
+                sb.append("(" + task.getName() + " - " + task.getDuration() + ") ");
+                        }
+        );
         jLabel3.setText(sb.toString());
+    }
+    
+    
+    private static void updateCPU() {
+        if (cpu.getActiveTask() == null && !tasks.isEmpty()) cpu.setActiveTask(tasks.remove());
+        else if (cpu.getActiveTask() != null) {
+            cpu.executeInstructions();
+            if (cpu.getActiveTask().getDuration() == 0) cpu.setActiveTask(null);
+            else {
+                tasks.add(cpu.getActiveTask());
+                cpu.setActiveTask(tasks.remove());
+            }
+        }
+        if (cpu.getActiveTask() != null) jLabel5.setText("(" + cpu.getActiveTask().getName() + " - " + cpu.getActiveTask().getDuration() + ") ");
+        else jLabel5.setText(null);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private static javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private static javax.swing.JLabel jLabel5;
     // End of variables declaration//GEN-END:variables
 }
