@@ -2,15 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pepegacorp.scheduler_eduardo;
+package pepegacorp.scheduler_eduardo.task;
 
 /**
  *
  * @author eduardo
  */
-public class B extends Task {
-    public B() {
-        setName(TaskNames.B);
-        setDuration(2);
+public class A extends Task {
+    public A() {
+        setName(TaskNames.A);
+        setDuration(1);
     }
 }

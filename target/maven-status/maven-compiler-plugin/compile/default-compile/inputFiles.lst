@@ -1,8 +1,8 @@
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/D.java
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/B.java
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/CPU.java
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/TaskNames.java
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/A.java
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/Task.java
-/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/C.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/task/D.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/cpu/CPU.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/task/C.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/task/A.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/task/TaskNames.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/task/Task.java
+/home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/task/B.java
 /home/eduardo/Documents/Java/Scheduler_Eduardo/src/main/java/pepegacorp/scheduler_eduardo/Window.java

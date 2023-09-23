@@ -4,6 +4,9 @@
  */
 package pepegacorp.scheduler_eduardo;
 
+import pepegacorp.scheduler_eduardo.cpu.CPU;
+import pepegacorp.scheduler_eduardo.task.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +51,7 @@ public class Window extends javax.swing.JFrame {
         inputStreamReader = new InputStreamReader(in);
         reader = new BufferedReader(inputStreamReader);
         fileWriter = new FileWriter("taskResults.txt");
-        taskResults.append("Quantum Length: 2s \n");
+        taskResults.append("Quantum Length: 2s \n\n");
         initComponents();
 
     }
@@ -190,8 +193,6 @@ public class Window extends javax.swing.JFrame {
             public void run() {
                 try {
                     new Window().setVisible(true);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -211,7 +212,7 @@ public class Window extends javax.swing.JFrame {
 
                 try {
 
-                    if (seconds == 0 || seconds % 5 == 0) {
+                    if (seconds % 5 == 0) {
                         readTask();
                     }
 
@@ -225,7 +226,7 @@ public class Window extends javax.swing.JFrame {
 
                 seconds++;
 
-                if (c == -1 && tasks.size() == 0 && cpu.getActiveTask() == null) {
+                if (c == -1 && tasks.isEmpty() && cpu.getActiveTask() == null) {
                     try {
                         fileWriter.write(taskResults.toString());
                         fileWriter.close();
@@ -254,19 +255,14 @@ public class Window extends javax.swing.JFrame {
             }
 
             switch (character) {
-                case 'A':
+                case 'A' ->
                     tasks.add(new A());
-                    break;
-                case 'B':
+                case 'B' ->
                     tasks.add(new B());
-                    break;
-                case 'C':
+                case 'C' ->
                     tasks.add(new C());
-                    break;
-                case 'D':
+                case 'D' ->
                     tasks.add(new D());
-                    break;
-
             }
 
         }
