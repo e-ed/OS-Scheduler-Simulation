@@ -6,8 +6,21 @@ package pepegacorp.scheduler_eduardo;
 
 import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
@@ -17,12 +30,30 @@ import javax.swing.SwingUtilities;
  */
 public class Window extends javax.swing.JFrame {
 
+    FileInputStream in;
+    InputStreamReader inputStreamReader;
+    static BufferedReader reader;
+    static private List<Task> tasks;
+
+    static int c;
+
     static int seconds = 0;
+    private static File file = new File("task.txt");
+    Scanner scanner;
 
     /**
      * Creates new form Window
      */
-    public Window() {
+    public Window() throws FileNotFoundException {
+        tasks = new ArrayList<>();
+        this.in = new FileInputStream(file);
+        inputStreamReader = new InputStreamReader(in);
+        reader = new BufferedReader(inputStreamReader);
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
 
     }
@@ -37,30 +68,43 @@ public class Window extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("jFrame");
 
         jLabel1.setText("jLabel1");
 
+        jLabel2.setText("Ready tasks:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(174, 174, 174)
-                .addComponent(jLabel1)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(127, 127, 127)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)))
+                .addContainerGap(164, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(100, 100, 100)
-                .addComponent(jLabel1)
-                .addContainerGap(183, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
-
-        getAccessibleContext().setAccessibleName("jFrame");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -96,7 +140,11 @@ public class Window extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Window().setVisible(true);
+                try {
+                    new Window().setVisible(true);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
         });
@@ -114,20 +162,57 @@ public class Window extends javax.swing.JFrame {
                     @Override
                     public void run() {
                         jLabel1.setText("" + seconds);
-                        
+
                         if (seconds == 0 || seconds % 5 == 0) {
-                            System.out.println("lendo");
+                            try {
+                                readTask();
+                                updateReadyTasks();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                        
+
                         seconds++;
-                        
+
                     }
                 }, 0, interval);
             }
         }, 500); // Adjust the delay based on your requirements
     }
 
+    private static void readTask() throws FileNotFoundException, IOException {
+        if ((c = reader.read()) != -1) {
+            char character = (char) c;
+            System.out.println(character);
+            
+            switch (character) {
+                case 'A':
+                    tasks.add(new A());
+                    break;
+                case 'B':
+                    tasks.add(new B());
+                    break;
+                case 'C':
+                    tasks.add(new C());
+                    break;
+                case 'D':
+                    tasks.add(new D());
+                    break;
+            }
+            
+            
+        }
+    }
+    
+    private static void updateReadyTasks() {
+        StringBuilder sb = new StringBuilder();
+        tasks.forEach(task -> sb.append("("+task.getName()+" - " + task.getDuration() + ") "));
+        jLabel3.setText(sb.toString());
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private static javax.swing.JLabel jLabel3;
     // End of variables declaration//GEN-END:variables
 }
