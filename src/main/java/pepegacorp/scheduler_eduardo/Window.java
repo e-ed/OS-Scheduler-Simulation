@@ -210,6 +210,12 @@ public class Window extends javax.swing.JFrame {
                         updateReadyTasks();
 
                         seconds++;
+                        
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                     }
                 }, 0, interval);
@@ -274,10 +280,11 @@ public class Window extends javax.swing.JFrame {
                 tasks.add(cpu.getActiveTask());
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
-            } else {
-                tasks.add(cpu.getActiveTask());
-                cpu.setActiveTask(tasks.remove());
-            }
+            } 
+//            else {
+//                tasks.add(cpu.getActiveTask());
+//                cpu.setActiveTask(tasks.remove());
+//            }
         }
         if (cpu.getActiveTask() != null) {
             jLabel5.setText("(" + cpu.getActiveTask().getName() + " - " + cpu.getActiveTask().getDuration() + ") ");
