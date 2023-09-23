@@ -5,7 +5,6 @@
 package pepegacorp.scheduler_eduardo;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -30,18 +28,15 @@ public class Window extends javax.swing.JFrame {
     static final int QUANTUM_LENGTH = 2;
     static int QUANTUM_CURRENT = 0;
     static final CPU cpu = new CPU();
-
     FileInputStream in;
     InputStreamReader inputStreamReader;
     static BufferedReader reader;
-
     static private Queue<Task> tasks;
     static int c;
     static int seconds = 0;
     private static File file = new File("task.txt");
     static FileWriter fileWriter;
     static StringBuilder taskResults = new StringBuilder();
-
     static boolean done = false;
     static int fileLength = 0;
     static int sbLength = 0;
@@ -56,7 +51,6 @@ public class Window extends javax.swing.JFrame {
         inputStreamReader = new InputStreamReader(in);
         reader = new BufferedReader(inputStreamReader);
         fileWriter = new FileWriter("taskResults.txt");
-
         initComponents();
 
     }
@@ -217,18 +211,15 @@ public class Window extends javax.swing.JFrame {
 
                 jLabel1.setText("" + seconds);
 
-                if (seconds == 0 || seconds % 5 == 0) {
-                    try {
-                        readTask();
-
-                    } catch (IOException ex) {
-                        Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
                 try {
+
+                    if (seconds == 0 || seconds % 5 == 0) {
+                        readTask();
+                    }
+
                     updateCPU();
-                } catch (IOException ex) {
-                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
                 updateReadyTasks();
@@ -250,7 +241,7 @@ public class Window extends javax.swing.JFrame {
             }
          ;
         
-        }, 2000, interval); // Adjust the delay based on your requirements
+        }, 2000, interval); 
     }
 
     private static void readTask() throws FileNotFoundException, IOException {
