@@ -23,8 +23,13 @@ public class CPU {
         this.activeTask = null;
     }
     
-    public void executeInstructions() {
-        this.activeTask.setDuration(activeTask.getDuration() - 1);
+    public boolean executeInstructions() {
+        if (activeTask != null ) {
+            this.activeTask.setDuration(activeTask.getDuration() - 1);
+            return true;
+        } else {
+            return false;
+        }
     }
             
     

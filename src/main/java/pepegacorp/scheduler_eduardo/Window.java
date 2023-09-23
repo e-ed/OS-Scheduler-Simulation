@@ -4,7 +4,6 @@
  */
 package pepegacorp.scheduler_eduardo;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,9 +27,11 @@ public class Window extends javax.swing.JFrame {
     static final int QUANTUM_LENGTH = 2;
     static int QUANTUM_CURRENT = 0;
     static final CPU cpu = new CPU();
+
     FileInputStream in;
     InputStreamReader inputStreamReader;
     static BufferedReader reader;
+
     static private Queue<Task> tasks;
     static int c;
     static int seconds = 0;
@@ -82,7 +83,7 @@ public class Window extends javax.swing.JFrame {
 
         jLabel2.setText("Ready tasks:");
 
-        jLabel3.setText("read");
+        jLabel3.setText("empty");
 
         jLabel4.setText("Active task:");
 
@@ -206,36 +207,26 @@ public class Window extends javax.swing.JFrame {
         waitTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                // Start the timer after the form is initialized
-                Timer displayTimer = new Timer();
-                displayTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        jLabel1.setText("" + seconds);
 
-                        if (seconds == 0 || seconds % 5 == 0) {
-                            try {
-                                readTask();
-                            } catch (IOException ex) {
-                                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
+                jLabel1.setText("" + seconds);
 
-                        updateCPU();
-                        updateReadyTasks();
-
-                        seconds++;
-                        
-//                        try {
-//                            Thread.sleep(2000);
-//                        } catch (InterruptedException ex) {
-//                            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-
+                if (seconds == 0 || seconds % 5 == 0) {
+                    try {
+                        readTask();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }, 0, interval);
+                }
+
+                updateCPU();
+                updateReadyTasks();
+
+                seconds++;
+
             }
-        }, 500); // Adjust the delay based on your requirements
+         ;
+        
+        }, 2000, interval); // Adjust the delay based on your requirements
     }
 
     private static void readTask() throws FileNotFoundException, IOException {
@@ -243,10 +234,11 @@ public class Window extends javax.swing.JFrame {
             char character = (char) c;
             if (!Character.isAlphabetic(character)) {
                 c = reader.read();
-                if (c == -1) return;
+                if (c == -1) {
+                    return;
+                }
                 character = (char) c;
             }
-
 
             switch (character) {
                 case 'A':
@@ -281,22 +273,31 @@ public class Window extends javax.swing.JFrame {
             cpu.setActiveTask(tasks.remove());
         } else if (cpu.getActiveTask() != null) {
 
-            cpu.executeInstructions();
-            QUANTUM_CURRENT++;
-
             if (cpu.getActiveTask().getDuration() == 0) {
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
+                
             } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
                 tasks.add(cpu.getActiveTask());
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
-            } 
+                
+                
+            }
+
+            QUANTUM_CURRENT = cpu.executeInstructions() ? QUANTUM_CURRENT+=1 : QUANTUM_CURRENT;
+            
 //            else {
 //                tasks.add(cpu.getActiveTask());
 //                cpu.setActiveTask(tasks.remove());
 //            }
         }
+        
+        updateLabels();
+       
+    }
+
+    public static void updateLabels() {
         if (cpu.getActiveTask() != null) {
             jLabel5.setText("(" + cpu.getActiveTask().getName() + " - " + cpu.getActiveTask().getDuration() + ") ");
         } else {
