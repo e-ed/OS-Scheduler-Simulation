@@ -1,4 +1,11 @@
 pepegacorp/scheduler_eduardo/Window$2.class
+pepegacorp/scheduler_eduardo/task/A.class
 pepegacorp/scheduler_eduardo/Window$3.class
 pepegacorp/scheduler_eduardo/Window.class
+pepegacorp/scheduler_eduardo/task/C.class
+pepegacorp/scheduler_eduardo/task/B.class
+pepegacorp/scheduler_eduardo/task/Task.class
+pepegacorp/scheduler_eduardo/cpu/CPU.class
 pepegacorp/scheduler_eduardo/Window$1.class
+pepegacorp/scheduler_eduardo/task/TaskNames.class
+pepegacorp/scheduler_eduardo/task/D.class

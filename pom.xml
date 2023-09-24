@@ -11,4 +11,21 @@
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>pepegacorp.scheduler_eduardo.Scheduler_Eduardo</exec.mainClass>
     </properties>
+     <build>  
+        <plugins>  
+            <plugin>  
+                <!-- Build an executable JAR -->  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-jar-plugin</artifactId>  
+                <version>3.1.0</version>  
+                <configuration>  
+                    <archive>  
+                        <manifest>  
+                            <mainClass>pepegacorp.scheduler_eduardo.Window</mainClass>  
+                        </manifest>  
+                    </archive>  
+                </configuration>  
+            </plugin>  
+        </plugins>  
+    </build>
 </project>
