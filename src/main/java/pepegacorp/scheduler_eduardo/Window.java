@@ -327,10 +327,12 @@ public class Window extends javax.swing.JFrame {
 
     private static void updateReadyTasks() {
         StringBuilder sb = new StringBuilder();
-        tasks.forEach(task -> {
-            sb.append("(" + task.getName() + " - " + task.getDuration() + ") ");
+        synchronized (tasksLock) {
+            tasks.forEach(task -> {
+                sb.append("(" + task.getName() + " - " + task.getDuration() + ") ");
+            }
+            );
         }
-        );
         jLabel3.setText(sb.toString());
     }
 
