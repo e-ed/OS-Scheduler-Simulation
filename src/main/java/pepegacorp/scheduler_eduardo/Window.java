@@ -347,10 +347,12 @@ public class Window extends javax.swing.JFrame {
                 QUANTUM_CURRENT = 0;
 
             } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
+                if (!tasks.isEmpty()) {
                 cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
                 tasks.add(cpu.getActiveTask());
                 cpu.setActiveTask(null);
                 QUANTUM_CURRENT = 0;
+                }
 
             }
 
