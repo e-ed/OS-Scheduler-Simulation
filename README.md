@@ -5,6 +5,8 @@ Quantum = 2s
 
 Meaning that after 2s, if the queue of ready tasks is not empty, the current task is removed from the CPU and the next task in the queue starts to be executed.
 
+A new task is read from the text file every 5 seconds.
+
 ## Tasks duration:
 
 A - 1 second
@@ -17,6 +19,7 @@ D - 4 seconds
 
 ## Text file with tasks
 Text file with a queue of tasks. The user is prompted to select this file from their computer.
+
 
 Example:
 
