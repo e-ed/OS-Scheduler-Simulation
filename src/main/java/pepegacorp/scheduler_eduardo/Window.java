@@ -8,11 +8,13 @@ import pepegacorp.scheduler_eduardo.cpu.CPU;
 import pepegacorp.scheduler_eduardo.task.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -22,6 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -49,7 +55,7 @@ public class Window extends javax.swing.JFrame {
      * Creates new form Window
      */
     public Window() throws FileNotFoundException, IOException {
-        JOptionPane.showMessageDialog(null, "Choose the text file with the tasks to be executed");
+
         fileWriter = new FileWriter("taskResults.txt");
         taskResults.append("Quantum Length: 2s \n\n");
         tasks = new LinkedList<>();
@@ -221,21 +227,18 @@ public class Window extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+            // Set Nimbus look and feel
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            // If Nimbus is not available, fall back to the system look and feel.
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                // Handle the exception appropriately
+                ex.printStackTrace();
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -250,10 +253,26 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        j.showOpenDialog(null);
-        file = j.getSelectedFile();
-        in = new FileInputStream(file);
-        inputStreamReader = new InputStreamReader(in);
+        int x = JOptionPane.showOptionDialog(null, "Choose to either type in tasks or a text file to read from",
+                "Click a button",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"Type in", "File"}, "Type");
+
+        String input;
+        InputStream targetStream;
+        if (x == 0) {
+            input = JOptionPane.showInputDialog(null, "Type in the tasks: ");
+            targetStream = new ByteArrayInputStream(input.getBytes());
+            inputStreamReader = new InputStreamReader(targetStream);
+        } else {
+
+            JOptionPane.showMessageDialog(null, "Choose the text file with the tasks to be executed");
+
+            j.showOpenDialog(null);
+            file = j.getSelectedFile();
+            in = new FileInputStream(file);
+            inputStreamReader = new InputStreamReader(in);
+
+        }
         reader = new BufferedReader(inputStreamReader);
 
         int interval = 1000;
