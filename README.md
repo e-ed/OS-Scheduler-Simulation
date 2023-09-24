@@ -1,6 +1,10 @@
 # OS Scheduler Simulation
 Simulating a Round-Robin scheduling algorithm with Java and Swing.
 
+Quantum = 2s
+
+Meaning that after 2s, if the queue of ready tasks is not empty, the current task is removed from the CPU and the next task in the queue starts to be executed.
+
 ## Tasks duration:
 
 A - 1 second
@@ -11,8 +15,8 @@ C - 3 seconds
 
 D - 4 seconds
 
-## task.txt
-Text file inside project to place a queue of tasks.
+## Text file with tasks
+Text file with a queue of tasks. The user is prompted to select this file from their computer.
 
 Example:
 
