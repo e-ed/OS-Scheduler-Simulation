@@ -30,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Window extends javax.swing.JFrame {
 
+    private static final Object tasksLock = new Object();
     static final int QUANTUM_LENGTH = 2;
     static int QUANTUM_CURRENT = 0;
     static final CPU cpu = new CPU();
@@ -248,8 +249,7 @@ public class Window extends javax.swing.JFrame {
 
             }
         });
-            
-        
+
         j.showOpenDialog(null);
         file = j.getSelectedFile();
         in = new FileInputStream(file);
@@ -310,17 +310,18 @@ public class Window extends javax.swing.JFrame {
                 character = (char) c;
             }
 
-            switch (character) {
-                case 'A' ->
-                    tasks.add(new A());
-                case 'B' ->
-                    tasks.add(new B());
-                case 'C' ->
-                    tasks.add(new C());
-                case 'D' ->
-                    tasks.add(new D());
+            synchronized (tasksLock) {
+                switch (character) {
+                    case 'A' ->
+                        tasks.add(new A());
+                    case 'B' ->
+                        tasks.add(new B());
+                    case 'C' ->
+                        tasks.add(new C());
+                    case 'D' ->
+                        tasks.add(new D());
+                }
             }
-
         }
     }
 
@@ -334,35 +335,35 @@ public class Window extends javax.swing.JFrame {
     }
 
     private static void updateCPU() throws IOException {
+        synchronized (tasksLock) {
+            if (cpu.getActiveTask() == null && !tasks.isEmpty()) {
+                cpu.setActiveTask(tasks.remove());
+            } else if (cpu.getActiveTask() != null) {
 
-        if (cpu.getActiveTask() == null && !tasks.isEmpty()) {
-            cpu.setActiveTask(tasks.remove());
-        } else if (cpu.getActiveTask() != null) {
+                if (cpu.getActiveTask().getDuration() == 0) {
+                    DefaultTableModel jTable = (DefaultTableModel) jTable2.getModel();
+                    jTable.addRow(new String[]{cpu.getActiveTask().getName().toString(), "" + cpu.getActiveTask().getTotalDuration()});
+                    taskResults.append(cpu.getActiveTask().getName() + " - Total Time: " + cpu.getActiveTask().getTotalDuration() + "\n");
+                    cpu.setActiveTask(null);
+                    QUANTUM_CURRENT = 0;
 
-            if (cpu.getActiveTask().getDuration() == 0) {
-                DefaultTableModel jTable = (DefaultTableModel) jTable2.getModel();
-                jTable.addRow(new String[] {cpu.getActiveTask().getName().toString(), ""+cpu.getActiveTask().getTotalDuration()});
-                taskResults.append(cpu.getActiveTask().getName() + " - Total Time: " + cpu.getActiveTask().getTotalDuration() + "\n");
-                cpu.setActiveTask(null);
-                QUANTUM_CURRENT = 0;
+                } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
+                    if (!tasks.isEmpty()) {
+                        cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
+                        tasks.add(cpu.getActiveTask());
+                        cpu.setActiveTask(null);
+                        QUANTUM_CURRENT = 0;
+                    }
 
-            } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
-                if (!tasks.isEmpty()) {
-                cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
-                tasks.add(cpu.getActiveTask());
-                cpu.setActiveTask(null);
-                QUANTUM_CURRENT = 0;
+                }
+
+                if (cpu.executeInstructions()) {
+                    cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
+                    QUANTUM_CURRENT += 1;
                 }
 
             }
-
-            if (cpu.executeInstructions()) {
-                cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
-                QUANTUM_CURRENT += 1;
-            }
-
         }
-
         updateLabels();
 
     }
