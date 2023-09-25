@@ -25,9 +25,6 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -54,12 +51,12 @@ public class Window extends javax.swing.JFrame {
     /**
      * Creates new form Window
      */
-    public Window() throws FileNotFoundException, IOException {
+    public Window() throws IOException {
 
+        initComponents();
         fileWriter = new FileWriter("taskResults.txt");
         taskResults.append("Quantum Length: 2s \n\n");
         tasks = new LinkedList<>();
-        initComponents();
 
     }
 
@@ -226,26 +223,21 @@ public class Window extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        //</editor-fold>
         try {
-            // Set Nimbus look and feel
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        } catch (UnsupportedLookAndFeelException e) {
-            // If Nimbus is not available, fall back to the system look and feel.
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                // Handle the exception appropriately
-                ex.printStackTrace();
-            }
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+
                     new Window().setVisible(true);
+
                 } catch (IOException ex) {
                     Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -254,8 +246,8 @@ public class Window extends javax.swing.JFrame {
         });
 
         int x = JOptionPane.showOptionDialog(null, "Choose to either type in tasks or a text file to read from",
-                "Click a button",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"Type in", "File"}, "Type");
+                "",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"Type", "File"}, "Type");
 
         String input;
         InputStream targetStream;
@@ -282,7 +274,6 @@ public class Window extends javax.swing.JFrame {
         waitTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-
                 jLabel1.setText("" + seconds);
 
                 try {
@@ -315,10 +306,11 @@ public class Window extends javax.swing.JFrame {
             }
          ;
         
-        }, 2000, interval);
+        }, 500, interval);
+
     }
 
-    private static void readTask() throws FileNotFoundException, IOException {
+    private static void readTask() throws IOException {
         if ((c = reader.read()) != -1) {
             char character = (char) c;
             while (!Character.isAlphabetic(character)) {
@@ -355,7 +347,7 @@ public class Window extends javax.swing.JFrame {
         jLabel3.setText(sb.toString());
     }
 
-    private static void updateCPU() throws IOException {
+    private static void updateCPU() {
         synchronized (tasksLock) {
             if (cpu.getActiveTask() == null && !tasks.isEmpty()) {
                 cpu.setActiveTask(tasks.remove());

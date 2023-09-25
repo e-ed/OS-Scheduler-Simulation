@@ -1,7 +1,3 @@
 Quantum Length: 2s 
 
-D - Total Time: 4
-B - Total Time: 3
-D - Total Time: 11
-A - Total Time: 3
-C - Total Time: 11
+A - Total Time: 1
