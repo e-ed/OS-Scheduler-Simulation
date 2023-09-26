@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
@@ -44,7 +45,9 @@ public class Window extends javax.swing.JFrame {
     static int c;
     static int seconds = 0;
     static JFileChooser j = new JFileChooser();
-    static File file;
+    static String currentDirectory = System.getProperty("user.dir");
+    static String filePath = currentDirectory + File.separator + "taskResults.txt";
+    static File file = new File(filePath);
     static FileWriter fileWriter;
     static StringBuilder taskResults = new StringBuilder();
 
@@ -54,9 +57,10 @@ public class Window extends javax.swing.JFrame {
     public Window() throws IOException {
 
         initComponents();
-        fileWriter = new FileWriter("taskResults.txt");
+        fileWriter = new FileWriter(file);
         taskResults.append("Quantum Length: 2s \n\n");
         tasks = new LinkedList<>();
+        //JOptionPane.showMessageDialog(null, System.getProperty("user.dir"));
 
     }
 
@@ -294,9 +298,10 @@ public class Window extends javax.swing.JFrame {
 
                 if (c == -1 && tasks.isEmpty() && cpu.getActiveTask() == null) {
                     try {
+                        file.createNewFile();
                         fileWriter.write(taskResults.toString());
                         fileWriter.close();
-                        JOptionPane.showMessageDialog(null, "Execution saved to taskResults.txt");
+                        JOptionPane.showMessageDialog(null, "Execution saved to " + filePath);
                         System.exit(0);
                     } catch (IOException ex) {
                         Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
