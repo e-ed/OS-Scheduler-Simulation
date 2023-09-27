@@ -354,9 +354,11 @@ public class Window extends javax.swing.JFrame {
 
     private static void updateCPU() {
         synchronized (tasksLock) {
-            if (cpu.getActiveTask() == null && !tasks.isEmpty()) {
-                cpu.setActiveTask(tasks.remove());
-            } else if (cpu.getActiveTask() != null) {
+            if (cpu.getActiveTask() == null) {
+                if (!tasks.isEmpty()) {
+                    cpu.setActiveTask(tasks.remove());
+                }
+            } else {
 
                 if (cpu.getActiveTask().getDuration() == 0) {
                     DefaultTableModel jTable = (DefaultTableModel) jTable2.getModel();
