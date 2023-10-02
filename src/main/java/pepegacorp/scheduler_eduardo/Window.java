@@ -28,7 +28,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
-import java.util.Map;
 
 /**
  *
@@ -38,7 +37,7 @@ public class Window extends javax.swing.JFrame {
 
     private static final Object tasksLock = new Object();
     static final int QUANTUM_LENGTH = 2;
-    static int QUANTUM_CURRENT = 0;
+    static int currentQuantum = 0;
     static final CPU cpu = new CPU();
     static FileInputStream in;
     static InputStreamReader inputStreamReader;
@@ -373,7 +372,7 @@ public class Window extends javax.swing.JFrame {
         StringBuilder sb = new StringBuilder();
         synchronized (tasksLock) {
             tasks.forEach(task -> {
-                sb.append("(" + task.getName() + " - " + task.getDuration() + ") ");
+                sb.append("(").append(task.getName()).append(" - ").append(task.getDuration()).append(") ");
             }
             );
         }
@@ -391,23 +390,23 @@ public class Window extends javax.swing.JFrame {
                 if (cpu.getActiveTask().getDuration() == 0) {
                     DefaultTableModel jTable = (DefaultTableModel) jTable2.getModel();
                     jTable.addRow(new String[]{cpu.getActiveTask().getName().toString(), "" + cpu.getActiveTask().getTotalDuration()});
-                    taskResults.append(cpu.getActiveTask().getName() + " - Total Time: " + cpu.getActiveTask().getTotalDuration() + "\n");
+                    taskResults.append(cpu.getActiveTask().getName()).append(" - Total Time: ").append(cpu.getActiveTask().getTotalDuration()).append("\n");
                     cpu.setActiveTask(null);
-                    QUANTUM_CURRENT = 0;
+                    currentQuantum = 0;
 
-                } else if (QUANTUM_CURRENT >= QUANTUM_LENGTH) {
+                } else if (currentQuantum >= QUANTUM_LENGTH) {
                     if (!tasks.isEmpty()) {
                         cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
                         tasks.add(cpu.getActiveTask());
                         cpu.setActiveTask(null);
-                        QUANTUM_CURRENT = 0;
+                        currentQuantum = 0;
                     }
 
                 }
 
                 if (cpu.executeInstructions()) {
                     cpu.getActiveTask().setTotalDuration(cpu.getActiveTask().getTotalDuration() + 1);
-                    QUANTUM_CURRENT += 1;
+                    currentQuantum += 1;
                 }
 
             }
@@ -422,7 +421,7 @@ public class Window extends javax.swing.JFrame {
         } else {
             jLabel5.setText(null);
         }
-        jLabel7.setText("" + QUANTUM_CURRENT);
+        jLabel7.setText("" + currentQuantum);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
