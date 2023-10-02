@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
@@ -26,7 +25,10 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Color;
+import java.util.Map;
 
 /**
  *
@@ -220,7 +222,7 @@ public class Window extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) throws FileNotFoundException {
+    public static void main(String args[]) throws FileNotFoundException, InterruptedException {
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -228,12 +230,33 @@ public class Window extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         //</editor-fold>
+//        try {
+//            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (Exception e) {
+//            // If Nimbus is not available, you can set the GUI to another look and feel.
+//        }
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+
+                    // Add a check for null before accessing "defaults"
+                    if (UIManager.getLookAndFeelDefaults() != null) {
+                        UIManager.getLookAndFeelDefaults().put("Table.alternateRowColor", new Color(240, 240, 240));
+                    }
+
+                    break;
+                }
+            }
         } catch (Exception e) {
+            
             e.printStackTrace();
         }
-
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -248,6 +271,11 @@ public class Window extends javax.swing.JFrame {
 
             }
         });
+
+
+            
+        // idk. fixed nimbus
+        Thread.sleep(500);
 
         int x = JOptionPane.showOptionDialog(null, "Choose to either type in tasks or a text file to read from",
                 "",

@@ -1,7 +1,0 @@
-Quantum Length: 2s 
-
-D - Total Time: 4
-D - Total Time: 11
-D - Total Time: 10
-D - Total Time: 17
-D - Total Time: 16
