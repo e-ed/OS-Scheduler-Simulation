@@ -368,19 +368,17 @@ public class Window extends javax.swing.JFrame {
         }
     }
 
-    private static void updateReadyTasks() {
+    private static synchronized void updateReadyTasks() {
         StringBuilder sb = new StringBuilder();
-        synchronized (tasksLock) {
             tasks.forEach(task -> {
                 sb.append("(").append(task.getName()).append(" - ").append(task.getDuration()).append(") ");
             }
             );
-        }
+
         jLabel3.setText(sb.toString());
     }
 
-    private static void updateCPU() {
-        synchronized (tasksLock) {
+    private static synchronized void updateCPU() {
             if (cpu.getActiveTask() == null) {
                 if (!tasks.isEmpty()) {
                     cpu.setActiveTask(tasks.remove());
@@ -410,12 +408,12 @@ public class Window extends javax.swing.JFrame {
                 }
 
             }
-        }
+
         updateLabels();
 
     }
 
-    public static void updateLabels() {
+    public static synchronized void updateLabels() {
         if (cpu.getActiveTask() != null) {
             jLabel5.setText("(" + cpu.getActiveTask().getName() + " - " + cpu.getActiveTask().getDuration() + ") ");
         } else {
